@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>香港地產營業員 (S牌) 2026 模擬考試 & 溫習神條 iOS App</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans HK -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ios: {
+                            bg: '#000000',
+                            card: '#1c1c1e',
+                            subcard: '#2c2c2e',
+                            blue: '#0a84ff',
+                            green: '#30d158',
+                            red: '#ff453a',
+                            orange: '#ff9f0a',
+                            yellow: '#ffd60a',
+                            purple: '#bf5af2',
+                            gray: '#8e8e93',
+                            divider: '#38383a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans HK', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans HK', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #09090b;
+            color: #f4f4f5;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        /* Glassmorphism Navigation */
+        .glass-nav {
+            background: rgba(24, 24, 27, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .glass-card {
+            background: rgba(39, 39, 42, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Compact mode scale modifiers */
+        .compact-ui .glass-card {
+            padding: 0.625rem !important;
+        }
+        .compact-ui .btn-option {
+            padding: 0.5rem !important;
+            margin-bottom: 0.375rem !important;
+        }
+
+        /* Fine custom thin scrollbars */
+        ::-webkit-scrollbar {
+            width: 3px;
+            height: 3px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 999px;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .badge-pulse {
+            animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .4; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-0 sm:p-2 md:p-4 bg-zinc-950 text-zinc-100 overflow-x-hidden">
+
+    <!-- iOS Dynamic Layout Shell -->
+    <div id="app-shell" class="w-full max-w-md h-screen sm:h-[860px] sm:max-h-[96vh] bg-black sm:rounded-[40px] shadow-2xl border-0 sm:border-[6px] border-zinc-800 flex flex-col relative overflow-hidden transition-all duration-200">
+        
+        <!-- iOS Status Bar -->
+        <div class="w-full h-9 px-5 pt-2 flex justify-between items-center text-[11px] font-semibold text-white z-50 shrink-0 select-none glass-nav border-b border-white/5">
+            <span id="ios-clock">09:41</span>
+            <!-- Dynamic Island Placeholder -->
+            <div class="w-20 h-3.5 bg-black rounded-full flex items-center justify-end px-1.5 gap-1 border border-zinc-800/60">
+                <div class="w-1.5 h-1.5 rounded-full bg-blue-500/80"></div>
+            </div>
+            <div class="flex items-center gap-1 text-[10px]">
+                <i class="fa-solid fa-signal"></i>
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-battery-full text-emerald-400"></i>
+            </div>
+        </div>
+
+        <!-- App Compact Header & Scale Adjuster -->
+        <div class="px-3 py-2 flex items-center justify-between border-b border-zinc-800 bg-zinc-900/90 z-40 shrink-0 gap-1">
+            <div class="flex items-center gap-1.5 min-w-0">
+                <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xs shadow-md shrink-0">
+                    S
+                </div>
+                <div class="truncate">
+                    <h1 class="text-xs font-bold text-zinc-100 leading-tight truncate">地產營業員 Pass 2026</h1>
+                    <p class="text-[9px] text-zinc-400 font-medium">EAA 考評規例‧精簡模式</p>
+                </div>
+            </div>
+
+            <!-- Layout Scale & View Controls -->
+            <div class="flex items-center gap-1 shrink-0">
+                <!-- UI Scale Adjuster -->
+                <div class="flex items-center bg-zinc-800/90 rounded-lg border border-zinc-700/80 p-0.5">
+                    <button onclick="adjustFontSize(-1)" title="縮小字體" class="w-6 h-5 flex items-center justify-center text-[10px] text-zinc-300 hover:text-white hover:bg-zinc-700 rounded active:scale-95">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <span id="font-size-label" class="text-[9px] font-mono font-bold px-1 text-zinc-300">100%</span>
+                    <button onclick="adjustFontSize(1)" title="放大字體" class="w-6 h-5 flex items-center justify-center text-[10px] text-zinc-300 hover:text-white hover:bg-zinc-700 rounded active:scale-95">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- Compact Mode Switch Button -->
+                <button onclick="toggleCompactMode()" id="btn-toggle-compact" class="px-2 py-1 bg-blue-600/20 border border-blue-500/40 text-blue-400 text-[10px] font-bold rounded-lg flex items-center gap-1 active:scale-95">
+                    <i class="fa-solid fa-compress text-[9px]"></i>
+                    <span id="compact-mode-text">精簡</span>
+                </button>
+
+                <!-- Target Exam Date Badge -->
+                <button onclick="toggleExamCountdownModal()" class="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-bold rounded-lg flex items-center gap-1">
+                    <i class="fa-regular fa-clock text-[9px]"></i>
+                    <span id="countdown-days-top">--日</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Scrollable Container -->
+        <div id="main-content" class="flex-1 overflow-y-auto no-scrollbar relative bg-zinc-950 pb-16 transition-all duration-150">
+            
+            <!-- VIEW 1: 📚 知識庫 (Knowledge Base) -->
+            <div id="view-knowledge" class="view-panel p-2.5 space-y-2.5">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-base font-bold text-white flex items-center gap-1.5">
+                            <span>📚 知識庫 & 地產法例</span>
+                        </h2>
+                        <p class="text-[10px] text-zinc-400">涵蓋六大考評範疇及重點法例條文</p>
+                    </div>
+                </div>
+
+                <!-- Search Input Bar -->
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-zinc-400 text-xs"></i>
+                    <input type="text" id="knowledge-search" onkeyup="filterKnowledgeItems()" placeholder="搜尋法例 (如: Encumbrance, 5%, PASP)..." 
+                        class="w-full pl-8 pr-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-blue-500">
+                </div>
+
+                <!-- 6 Major Categories Accordion -->
+                <div class="space-y-2" id="knowledge-list">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+
+            <!-- VIEW 2: 🎯 專題練習 (Topic Drill) -->
+            <div id="view-drill" class="view-panel hidden p-2.5 space-y-2.5">
+                <div>
+                    <h2 class="text-base font-bold text-white">🎯 專題章節強化練習</h2>
+                    <p class="text-[10px] text-zinc-400">針對弱點模組，隨時隨地分章節操練試題</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-2" id="topic-drill-cards">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+
+            <!-- VIEW 3: 📝 全真模擬考試 (Full Mock Exam Engine) -->
+            <div id="view-exam" class="view-panel hidden p-2.5 space-y-2.5">
+                <!-- Exam Mode Intro Header -->
+                <div id="exam-start-card" class="glass-card rounded-xl p-4 space-y-3 text-center border border-blue-500/20">
+                    <div class="w-11 h-11 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center mx-auto text-xl font-bold border border-blue-500/30">
+                        📝
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">50題 全真模擬考試</h3>
+                        <p class="text-[10px] text-zinc-400 mt-0.5">完全跟足 EAA / PEAK 高峰進修學院考試標準</p>
+                    </div>
+
+                    <div class="bg-zinc-900/90 rounded-lg p-2.5 text-left space-y-1.5 text-[11px] border border-zinc-800">
+                        <div class="flex items-start gap-1.5 text-amber-300">
+                            <i class="fa-solid fa-triangle-exclamation mt-0.5 text-xs shrink-0"></i>
+                            <div>
+                                <span class="font-bold">⚠️ 及格雙重生死線：</span>
+                                <ul class="list-disc list-inside mt-0.5 text-zinc-300 space-y-0.5 text-[10px]">
+                                    <li>總分：50 題中需答對 <strong>30 題或以上 (60%)</strong></li>
+                                    <li><strong class="text-rose-400">10題個案題特訓：錯不可多於 3 題 (錯4題即淘汰!)</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t border-zinc-800 text-zinc-400 text-[10px]">
+                            <span>⏱️ 限時：105 分鐘</span>
+                            <span>📊 題數：50 多項選擇題</span>
+                        </div>
+                    </div>
+
+                    <button onclick="startFullMockExam()" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-lg shadow-md active:scale-[0.98] text-xs flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-play"></i>
+                        立即開始計時模擬考試
+                    </button>
+                </div>
+
+                <!-- Active Exam Layout Area -->
+                <div id="exam-active-container" class="hidden space-y-2">
+                    <!-- Top Sticky Compact Toolbar -->
+                    <div class="sticky top-0 z-30 bg-zinc-900/95 backdrop-blur-md border border-zinc-800 rounded-xl p-2 flex items-center justify-between gap-2 shadow-md">
+                        <div class="flex items-center gap-1.5">
+                            <div id="timer-badge" class="px-2 py-0.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 font-mono font-bold text-xs rounded-md flex items-center gap-1">
+                                <i class="fa-regular fa-clock text-[10px]"></i>
+                                <span id="exam-timer-display">105:00</span>
+                            </div>
+                            <span class="text-[9px] text-zinc-400 font-medium hidden sm:inline">個案題錯≤3</span>
+                        </div>
+
+                        <!-- Progress indicator -->
+                        <div class="text-[10px] font-bold text-blue-400">
+                            已答: <span id="answered-count-text">0</span>/50
+                        </div>
+
+                        <div class="flex items-center gap-1">
+                            <button onclick="toggleQuestionGridModal()" class="px-2 py-0.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[10px] font-semibold rounded-md flex items-center gap-1 border border-zinc-700">
+                                <i class="fa-solid fa-grip-vertical text-[9px]"></i>
+                                <span>題號板</span>
+                            </button>
+                            <button onclick="confirmFinishExam()" class="px-2.5 py-0.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold rounded-md">
+                                交卷
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Question Container -->
+                    <div id="current-question-card" class="glass-card rounded-xl p-3 space-y-2 border border-zinc-800">
+                        <!-- Dynamic rendered question -->
+                    </div>
+
+                    <!-- Compact Bottom Nav -->
+                    <div class="flex justify-between items-center gap-2 pt-1">
+                        <button onclick="navigateQuestion(-1)" id="btn-prev-q" class="flex-1 py-1.5 bg-zinc-800 disabled:opacity-30 hover:bg-zinc-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-chevron-left text-[10px]"></i> 上一題
+                        </button>
+                        <button onclick="toggleBookmarkCurrentQuestion()" id="btn-flag-q" class="px-3 py-1.5 bg-zinc-900 border border-zinc-800 text-amber-400 rounded-lg text-xs font-semibold flex items-center justify-center gap-1">
+                            <i id="flag-icon" class="fa-regular fa-bookmark"></i> 標記
+                        </button>
+                        <button onclick="navigateQuestion(1)" id="btn-next-q" class="flex-1 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1">
+                            下一題 <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 4: 🔥 個案分析特訓 (Case Study Drill) -->
+            <div id="view-casestudy" class="view-panel hidden p-2.5 space-y-2.5">
+                <div class="bg-gradient-to-r from-amber-950/40 to-rose-950/40 p-3 rounded-xl border border-amber-500/30 space-y-1">
+                    <div class="flex items-center gap-1.5 text-amber-400">
+                        <i class="fa-solid fa-fire text-sm"></i>
+                        <h2 class="text-sm font-bold">10題個案分析生死特訓</h2>
+                    </div>
+                    <p class="text-[10px] text-zinc-300 leading-relaxed">
+                        地產營業員考試<strong>最高淘汰率考點</strong>！長篇個案連環發問，錯 > 3 題即刻淘汰。
+                    </p>
+                </div>
+
+                <div id="casestudy-content-area" class="space-y-3">
+                    <!-- Dynamic rendering for case study scenarios -->
+                </div>
+            </div>
+
+            <!-- VIEW 5: 📊 弱項分析 & 錯題本 (Analytics) -->
+            <div id="view-analytics" class="view-panel hidden p-2.5 space-y-2.5">
+                <div>
+                    <h2 class="text-base font-bold text-white">📊 學習數據 & 錯題本</h2>
+                    <p class="text-[10px] text-zinc-400">實力數據分析，精準重溫錯題</p>
+                </div>
+
+                <!-- Summary Stat Badges -->
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-zinc-900/90 border border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between">
+                        <span class="text-[10px] text-zinc-400">歷次模擬考及格率</span>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span id="stat-pass-rate" class="text-xl font-bold text-emerald-400">0%</span>
+                            <span class="text-[9px] text-zinc-500" id="stat-exam-count">(共0次)</span>
+                        </div>
+                    </div>
+                    <div class="bg-zinc-900/90 border border-zinc-800 p-2.5 rounded-xl flex flex-col justify-between">
+                        <span class="text-[10px] text-zinc-400">個案分析合格狀況</span>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span id="stat-case-accuracy" class="text-xl font-bold text-amber-400">0%</span>
+                            <span class="text-[9px] text-zinc-500">(上限錯3題)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weak Topics Progress Bars -->
+                <div class="glass-card p-3 rounded-xl space-y-2">
+                    <h3 class="text-[10px] font-bold text-zinc-300 uppercase tracking-wider">六大模組掌握度</h3>
+                    <div class="space-y-2" id="topic-analytics-bars">
+                        <!-- Dynamic rendered progress bars -->
+                    </div>
+                </div>
+
+                <!-- Wrong Answer Journal (錯題本) -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xs font-bold text-white flex items-center gap-1">
+                            <i class="fa-solid fa-book-skull text-rose-400"></i>
+                            自動集結錯題庫 (<span id="wrong-count-badge">0</span>)
+                        </h3>
+                        <button onclick="startWrongQuestionsPractice()" id="btn-retest-wrongs" class="px-2 py-0.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-[10px] font-semibold rounded-md disabled:opacity-30">
+                            重溫錯題
+                        </button>
+                    </div>
+
+                    <div id="wrong-questions-list" class="space-y-1.5">
+                        <!-- Dynamic rendered list of wrong questions -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Floating Segmented iOS Tab Bar -->
+        <div class="absolute bottom-0 left-0 right-0 h-13 bg-zinc-900/95 backdrop-blur-md border-t border-zinc-800/80 flex items-center justify-around px-1 z-40">
+            <button onclick="switchTab('knowledge')" id="tab-knowledge" class="tab-btn flex flex-col items-center justify-center w-full h-full text-blue-500 transition-colors">
+                <i class="fa-solid fa-book-bookmark text-sm"></i>
+                <span class="text-[9px] font-medium mt-0.5">知識庫</span>
+            </button>
+            <button onclick="switchTab('drill')" id="tab-drill" class="tab-btn flex flex-col items-center justify-center w-full h-full text-zinc-500 hover:text-zinc-300 transition-colors">
+                <i class="fa-solid fa-bullseye text-sm"></i>
+                <span class="text-[9px] font-medium mt-0.5">專題</span>
+            </button>
+            <button onclick="switchTab('exam')" id="tab-exam" class="tab-btn flex flex-col items-center justify-center w-full h-full text-zinc-500 hover:text-zinc-300 transition-colors">
+                <i class="fa-solid fa-file-signature text-sm"></i>
+                <span class="text-[9px] font-medium mt-0.5">模擬考</span>
+            </button>
+            <button onclick="switchTab('casestudy')" id="tab-casestudy" class="tab-btn flex flex-col items-center justify-center w-full h-full text-zinc-500 hover:text-zinc-300 transition-colors">
+                <i class="fa-solid fa-fire-flame-curved text-sm"></i>
+                <span class="text-[9px] font-medium mt-0.5">個案特訓</span>
+            </button>
+            <button onclick="switchTab('analytics')" id="tab-analytics" class="tab-btn flex flex-col items-center justify-center w-full h-full text-zinc-500 hover:text-zinc-300 transition-colors">
+                <i class="fa-solid fa-chart-pie text-sm"></i>
+                <span class="text-[9px] font-medium mt-0.5">弱項</span>
+            </button>
+        </div>
+
+        <!-- Question Grid Matrix Modal -->
+        <div id="modal-grid" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex flex-col justify-end">
+            <div class="bg-zinc-900 border-t border-zinc-800 rounded-t-2xl p-4 max-h-[75%] overflow-y-auto space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-white">50題 Answer Matrix (點擊跳轉)</h3>
+                    <button onclick="toggleQuestionGridModal()" class="w-6 h-6 bg-zinc-800 text-zinc-400 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    </button>
+                </div>
+                <!-- Legend -->
+                <div class="flex items-center gap-2 text-[9px] text-zinc-400 flex-wrap">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-600 inline-block"></span> 已答</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-zinc-800 border border-zinc-700 inline-block"></span> 未答</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span> 已標記</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500 inline-block"></span> 個案題</span>
+                </div>
+                <div id="question-grid-matrix" class="grid grid-cols-5 gap-1.5">
+                    <!-- Dynamic Grid 1-50 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Exam Result Modal -->
+        <div id="modal-result" class="absolute inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex flex-col items-center justify-center p-4 overflow-y-auto">
+            <div class="w-full max-w-xs glass-card rounded-2xl p-4 text-center space-y-3 border border-zinc-700 my-auto">
+                <div id="result-badge-icon" class="w-14 h-14 rounded-full mx-auto flex items-center justify-center text-2xl shadow-lg">
+                    🏆
+                </div>
+                
+                <div>
+                    <h3 id="result-title" class="text-base font-extrabold text-white">考試合格 Passed!</h3>
+                    <p id="result-subtitle" class="text-[10px] text-zinc-400 mt-0.5">符合 EAA 營業員牌照要求</p>
+                </div>
+
+                <!-- Scores Breakdown -->
+                <div class="bg-zinc-900/90 rounded-xl p-3 space-y-2 text-left border border-zinc-800 text-xs">
+                    <div class="flex justify-between items-center text-[11px]">
+                        <span class="text-zinc-400">總得分 (Total Score):</span>
+                        <span id="result-total-score" class="font-mono font-bold text-white">38 / 50</span>
+                    </div>
+                    <div class="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
+                        <div id="result-total-bar" class="h-full bg-blue-500" style="width: 76%"></div>
+                    </div>
+
+                    <div class="pt-1.5 border-t border-zinc-800 flex justify-between items-center text-[11px]">
+                        <div>
+                            <span class="text-zinc-300 font-semibold">10題個案分析題:</span>
+                            <p class="text-[9px] text-zinc-500">門檻：錯少於 4 題</p>
+                        </div>
+                        <span id="result-case-wrong" class="font-mono font-bold text-emerald-400">錯 1 題 (合格)</span>
+                    </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="space-y-1.5 pt-1">
+                    <button onclick="reviewExamAnswers()" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg shadow">
+                        查看完整試題解析 & 條例引用
+                    </button>
+                    <button onclick="closeResultModal()" class="w-full py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold rounded-lg">
+                        返回首頁
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Countdown Modal -->
+        <div id="modal-countdown" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+            <div class="w-full max-w-xs bg-zinc-900 border border-zinc-800 rounded-2xl p-4 text-center space-y-3">
+                <i class="fa-solid fa-calendar-check text-2xl text-amber-400"></i>
+                <div>
+                    <h3 class="text-sm font-bold text-white">2026年10月中考期倒數</h3>
+                    <p class="text-[10px] text-zinc-400 mt-0.5">目標：香港地產營業員牌照 (S牌)</p>
+                </div>
+                <div class="bg-zinc-950 p-3 rounded-xl border border-zinc-800">
+                    <div id="modal-countdown-num" class="text-2xl font-extrabold text-amber-400 font-mono">--</div>
+                    <span class="text-[9px] text-zinc-500 uppercase tracking-widest mt-0.5 block">Days Remaining</span>
+                </div>
+                <p class="text-[10px] text-zinc-400 text-left leading-relaxed">
+                    💡 <strong>溫習建議：</strong>個案題錯 4 題即淘，考前請善用「精簡模式」多做計時全真考題。
+                </p>
+                <button onclick="toggleExamCountdownModal()" class="w-full py-1.5 bg-zinc-800 text-zinc-200 text-xs font-bold rounded-lg">
+                    明白，繼續溫習！
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // -------------------------------------------------------------
+        // EXAM TOPICS & QUESTION BANK
+        // -------------------------------------------------------------
+        const EXAM_TOPICS = {
+            CAP_511: "地產代理條例(第511章)及牌照制度",
+            CIRCULARS: "執業通告與實務指引 (Circulars)",
+            CAP_621: "一手住宅物業銷售條例 (Cap 621) 及轉易",
+            LAND_SEARCH: "土地註冊處查冊 (Land Search) 與負擔",
+            BUILDINGS: "建築物條例、公契 (DMC) 及物業管理",
+            TENANCY: "租務條例、租約 (Tenancy) 及印花稅"
+        };
+
+        const QUESTION_BANK = [
+            {
+                id: 101,
+                topic: EXAM_TOPICS.CAP_511,
+                isCaseStudy: false,
+                question: "根據《地產代理條例》（第511章），營業員牌照（S牌 / Form 1）持有人能否以個人身份獨立經營地產代理業務？",
+                options: [
+                    "可以，只要其牌照在有效期間內",
+                    "不可以，必須作為持牌地產代理的僱員或代理人方可從事地產代理工作",
+                    "可以，但每年營業額不得超過港幣50萬元",
+                    "可以，但只可處理租賃物業"
+                ],
+                answer: 1,
+                explanation: "《地產代理條例》第511章規定，營業員（Salesperson）牌照持有人不能獨立經營業務，必須受僱於持牌地產代理（Estate Agent）。"
+            },
+            {
+                id: 102,
+                topic: EXAM_TOPICS.CAP_511,
+                isCaseStudy: false,
+                question: "地產代理監管局（EAA）發出的營業員牌照最長有效期為多久？",
+                options: [
+                    "6 個月",
+                    "1 年 或 2 年",
+                    "3 年",
+                    "終身有效"
+                ],
+                answer: 1,
+                explanation: "營業員及地產代理牌照的有效期可申請為 12 個月（1年）或 24 個月（2年）。"
+            },
+            {
+                id: 201,
+                topic: EXAM_TOPICS.CIRCULARS,
+                isCaseStudy: false,
+                question: "根據 EAA 執業通告，地產代理在發佈物業廣告前，必須先獲得地產代理協議授權，且廣告內必須清楚列明什麼？",
+                options: [
+                    "業主的身份證號碼",
+                    "牌照號碼／營業詳情說明書號碼及廣告日期或編號",
+                    "物業過往 5 年的成交歷史",
+                    "物業原買入價"
+                ],
+                answer: 1,
+                explanation: "廣告必須載有持牌人牌照號碼、營業詳情說明書號碼及廣告編號/發佈日期。"
+            },
+            {
+                id: 301,
+                topic: EXAM_TOPICS.CAP_621,
+                isCaseStudy: false,
+                question: "根據《一手住宅物業銷售條例》（第621章），買家在簽署臨時買賣合約（PASP）後放棄完成交易，最多會被沒收多少訂金？",
+                options: [
+                    "臨時訂金的 3%",
+                    "臨時訂金的 5%",
+                    "臨時訂金的 10%",
+                    "首期樓價的 20%"
+                ],
+                answer: 1,
+                explanation: "根據 Cap 621，買家在簽署 PASP 後 5 個工作天內未簽署正式合約，PASP 終止，發展商沒收上限為樓價 5% 的臨時訂金。"
+            },
+            {
+                id: 302,
+                topic: EXAM_TOPICS.CAP_621,
+                isCaseStudy: false,
+                question: "一手住宅物業發展商向公眾提供售樓說明書（Sales Brochure），必須在售樓日期前最少多少天提供？",
+                options: [
+                    "3 天",
+                    "7 天",
+                    "14 天",
+                    "30 天"
+                ],
+                answer: 1,
+                explanation: "售樓說明書必須在發售日期的最少 7 天前免費向公眾提供。"
+            },
+            {
+                id: 401,
+                topic: EXAM_TOPICS.LAND_SEARCH,
+                isCaseStudy: false,
+                question: "在土地查冊（Land Search）的「業權負擔欄」發現 'Building Order under Sec 24'（清拆令），代表什麼？",
+                options: [
+                    "物業已被政府收回",
+                    "物業存在違例建築物（僭建），屋宇署指令業主清拆",
+                    "業主欠繳地租",
+                    "物業已被銀行強制拍賣"
+                ],
+                answer: 1,
+                explanation: "Sec 24 Order 係屋宇署針對違例建築物（僭建）發出的清拆令，屬業權負擔（Encumbrance）。"
+            },
+            {
+                id: 501,
+                topic: EXAM_TOPICS.BUILDINGS,
+                isCaseStudy: false,
+                question: "大廈公契（Deed of Mutual Covenant, DMC）下，下列何者通常屬於公用部分（Common Parts）？",
+                options: [
+                    "單位內的非承重隔牆",
+                    "大廈外部外牆、電梯大堂、樓梯及屋頂",
+                    "業主私人的專用露台",
+                    "私家車位"
+                ],
+                answer: 1,
+                explanation: "大廈外牆、結構牆、電梯大堂、樓梯屬公用部分，業主無權擅自佔用。"
+            },
+            {
+                id: 601,
+                topic: EXAM_TOPICS.TENANCY,
+                isCaseStudy: false,
+                question: "住宅租約租期為 2 年，印花稅（Stamp Duty / 貼印花稅）的稅率按平均年租金的多少計算？",
+                options: [
+                    "0.25%",
+                    "0.5%",
+                    "1%",
+                    "2%"
+                ],
+                answer: 1,
+                explanation: "租期超過 1 年但不超過 3 年的租約，印花稅率為平均年租金的 0.5%。"
+            }
+        ];
+
+        // Case Study Scenarios
+        const CASE_STUDIES = [
+            {
+                caseId: "CASE-01",
+                title: "個案一：二手住宅查冊違例與按揭負擔隱瞞事件",
+                scenario: `持牌營業員阿陳（陳先生）代表買家李先生睇樓。業主黃先生向阿陳透露：「我單位陽台加建咗密封窗，樓下銀行之前對單位登記咗一份押記令（Charging Order），但簽合約前會搞妥。」阿陳隱瞞買家李先生並聲稱：「查冊好乾淨。」，簽署《臨時買賣合約》。其後李先生申請按揭被拒，面臨訂金被沒收。`,
+                questions: [
+                    {
+                        id: 901,
+                        topic: EXAM_TOPICS.LAND_SEARCH,
+                        isCaseStudy: true,
+                        question: "【個案 1/3】根據 EAA 規例，營業員阿陳在安排買家簽署臨時買賣合約前有甚麼責任？",
+                        options: [
+                            "只需口頭問業主，不需要做查冊",
+                            "必須進行土地查冊，並向買家提供查冊副本及盡合理努力解釋業權負擔",
+                            "只需確保買家支付足夠佣金",
+                            "業主口頭承諾後阿陳即無須負責"
+                        ],
+                        answer: 1,
+                        explanation: "安排簽約前必須進行土地查冊，並告知買家押記令等業權負擔。"
+                    },
+                    {
+                        id: 902,
+                        topic: EXAM_TOPICS.CIRCULARS,
+                        isCaseStudy: true,
+                        question: "【個案 2/3】阿陳向買家聲稱「查冊好乾淨」而隱瞞押記令及僭建，可能觸犯什麼？",
+                        options: [
+                            "只屬於商業美德問題",
+                            "違反 EAA《操守守則》及可能涉及提供虛假/具誤導性資料，接受紀律處分",
+                            "只要交易順利不違法",
+                            "只會被公司扣減佣金"
+                        ],
+                        answer: 1,
+                        explanation: "隱瞞已知物業瑕疵（如業權負擔）違反 EAA《操守守則》。"
+                    },
+                    {
+                        id: 903,
+                        topic: EXAM_TOPICS.LAND_SEARCH,
+                        isCaseStudy: true,
+                        question: "【個案 3/3】個案中的「押記令」（Charging Order）在土地登記冊的哪一個欄目顯示？",
+                        options: [
+                            "物業資料欄 (Property Section)",
+                            "業主姓名欄 (Owner Section)",
+                            "業權負擔欄 (Incumbrances Section)",
+                            "備忘錄欄 (Memorandum Section)"
+                        ],
+                        answer: 2,
+                        explanation: "按揭、押記令、清拆令均註冊於「業權負擔欄」（Incumbrances Section）。"
+                    }
+                ]
+            },
+            {
+                caseId: "CASE-02",
+                title: "個案二：一手住宅展銷會虛假規劃宣傳",
+                scenario: `營業員小玲喺一手樓展銷會向張先生宣稱：「樓盤旁邊空地落實興建大型商場同地鐵站，即買即賺！」但該地劃為「綠化地帶」，並無規劃。張先生付 5% 訂金簽 PASP，發現真相後向 EAA 投訴。`,
+                questions: [
+                    {
+                        id: 904,
+                        topic: EXAM_TOPICS.CAP_621,
+                        isCaseStudy: true,
+                        question: "【個案 1/2】小玲提供虛假規劃資料，違反了甚麼條例？",
+                        options: [
+                            "無違反，屬常見推銷手法",
+                            "觸犯 Cap 621 中發佈虛假/具誤導性資料罪行及 EAA 執業通告",
+                            "只違反大廈公契",
+                            "口頭承諾不受約束"
+                        ],
+                        answer: 1,
+                        explanation: "《一手住宅物業銷售條例》（Cap 621）嚴禁提供虛假或誤導性資料。"
+                    },
+                    {
+                        id: 905,
+                        topic: EXAM_TOPICS.CAP_621,
+                        isCaseStudy: true,
+                        question: "【個案 2/2】張先生若在簽 PASP 後 5 個工作天內放棄不簽正式合約，以下描述何者正確？",
+                        options: [
+                            "發展商可追討額外損失",
+                            "PASP 終止，發展商只限沒收樓價 5% 的臨時訂金，不能進一步索償",
+                            "必須強制完成交易",
+                            "可全數取回 5% 訂金"
+                        ],
+                        answer: 1,
+                        explanation: "Cap 621 規定放棄買賣時，沒收上限為 5% 臨時訂金。"
+                    }
+                ]
+            }
+        ];
+
+        // Knowledge Base Detailed Data Source
+        const KNOWLEDGE_BASE_DATA = [
+            {
+                category: EXAM_TOPICS.CAP_511,
+                icon: "fa-scale-balanced",
+                color: "text-blue-400",
+                items: [
+                    {
+                        title: "營業員牌照 (Salesperson / Form 1) 資格",
+                        desc: "須年滿 18 歲、完成中五/DSE、考獲合格、屬「適當人選」。不可獨立經營，必須受僱於持牌地產代理。"
+                    },
+                    {
+                        title: "Cap. 511 無牌經營罰則",
+                        desc: "無牌經營屬刑事罪行，最高罰款 HK$500,000 及監禁 5 年。"
+                    }
+                ]
+            },
+            {
+                category: EXAM_TOPICS.CIRCULARS,
+                icon: "fa-bullhorn",
+                color: "text-amber-400",
+                items: [
+                    {
+                        title: "地產代理協議 (Form 3 & Form 5)",
+                        desc: "住宅買賣：Form 3 (賣方) / Form 4 (買方)；租賃：Form 5 (出租) / Form 6 (承租)。載明佣金及有效期。"
+                    }
+                ]
+            },
+            {
+                category: EXAM_TOPICS.CAP_621,
+                icon: "fa-building-circle-check",
+                color: "text-emerald-400",
+                items: [
+                    {
+                        title: "一手樓思考期 (Cooling-off Period)",
+                        desc: "簽署 PASP 後有 5 個工作天思考期，若放棄簽正式合約，沒收樓價 5% 訂金。"
+                    }
+                ]
+            },
+            {
+                category: EXAM_TOPICS.LAND_SEARCH,
+                icon: "fa-file-contract",
+                color: "text-purple-400",
+                items: [
+                    {
+                        title: "土地查冊四大欄目",
+                        desc: "1. Property Details; 2. Owner Details; 3. Incumbrances (業權負擔); 4. Deeds Pending Registration。"
+                    }
+                ]
+            }
+        ];
+
+        // -------------------------------------------------------------
+        // STATE MANAGEMENT
+        // -------------------------------------------------------------
+        let currentTab = 'knowledge';
+        let isCompactMode = true;
+        let fontSizeScale = 100; // Percentage
+
+        let currentExamQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let bookmarkedQuestions = new Set();
+        let examTimerInterval = null;
+        let timeRemainingSeconds = 105 * 60;
+
+        let examHistory = [];
+        let wrongQuestionIds = new Set();
+
+        const EXAM_TARGET_DATE = new Date('2026-10-15T09:30:00');
+
+        // -------------------------------------------------------------
+        // APPLICATION INIT
+        // -------------------------------------------------------------
+        window.onload = function() {
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            updateCountdownDays();
+            renderKnowledgeBase();
+            renderTopicDrillCards();
+            renderCaseStudySection();
+            renderAnalyticsUI();
+
+            switchTab('knowledge');
+        };
+
+        function updateClock() {
+            const now = new Date();
+            const clockEl = document.getElementById('ios-clock');
+            if (clockEl) clockEl.innerText = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+
+        function updateCountdownDays() {
+            const now = new Date();
+            const diffTime = EXAM_TARGET_DATE - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            const topEl = document.getElementById('countdown-days-top');
+            const modalEl = document.getElementById('modal-countdown-num');
+            
+            const daysText = diffDays > 0 ? `${diffDays}日` : '應考日!';
+            if (topEl) topEl.innerText = daysText;
+            if (modalEl) modalEl.innerText = diffDays > 0 ? diffDays : '0';
+        }
+
+        function toggleExamCountdownModal() {
+            document.getElementById('modal-countdown').classList.toggle('hidden');
+        }
+
+        // -------------------------------------------------------------
+        // UI COMPACT & FONT SCALE CONTROLLERS
+        // -------------------------------------------------------------
+        function toggleCompactMode() {
+            isCompactMode = !isCompactMode;
+            const shell = document.getElementById('app-shell');
+            const btnText = document.getElementById('compact-mode-text');
+
+            if (isCompactMode) {
+                shell.classList.add('compact-ui');
+                btnText.innerText = '精簡';
+            } else {
+                shell.classList.remove('compact-ui');
+                btnText.innerText = '標準';
+            }
+            renderCurrentExamQuestion();
+        }
+
+        function adjustFontSize(delta) {
+            fontSizeScale += delta * 10;
+            if (fontSizeScale < 80) fontSizeScale = 80;
+            if (fontSizeScale > 120) fontSizeScale = 120;
+
+            document.getElementById('font-size-label').innerText = `${fontSizeScale}%`;
+            document.getElementById('main-content').style.fontSize = `${fontSizeScale / 100}rem`;
+        }
+
+        // -------------------------------------------------------------
+        // TAB SWITCHING
+        // -------------------------------------------------------------
+        function switchTab(tabName) {
+            currentTab = tabName;
+
+            document.querySelectorAll('.view-panel').forEach(panel => panel.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-blue-500');
+                btn.classList.add('text-zinc-500');
+            });
+
+            const targetView = document.getElementById(`view-${tabName}`);
+            const targetTabBtn = document.getElementById(`tab-${tabName}`);
+
+            if (targetView) targetView.classList.remove('hidden');
+            if (targetTabBtn) {
+                targetTabBtn.classList.add('text-blue-500');
+                targetTabBtn.classList.remove('text-zinc-500');
+            }
+
+            if (tabName === 'analytics') renderAnalyticsUI();
+        }
+
+        // -------------------------------------------------------------
+        // KNOWLEDGE BASE VIEW
+        // -------------------------------------------------------------
+        function renderKnowledgeBase() {
+            const container = document.getElementById('knowledge-list');
+            if (!container) return;
+
+            let html = '';
+            KNOWLEDGE_BASE_DATA.forEach((module, idx) => {
+                html += `
+                    <div class="glass-card rounded-xl p-2.5 space-y-2 border border-zinc-800">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-lg bg-zinc-900 border border-zinc-700 flex items-center justify-center ${module.color} text-xs">
+                                <i class="fa-solid ${module.icon}"></i>
+                            </div>
+                            <h3 class="text-xs font-bold text-white flex-1">${module.category}</h3>
+                        </div>
+                        <div class="space-y-1.5 pt-1 border-t border-zinc-800/60">
+                `;
+
+                module.items.forEach(item => {
+                    html += `
+                        <div class="bg-zinc-900/80 rounded-lg p-2 space-y-0.5 border border-zinc-800">
+                            <h4 class="text-[11px] font-bold text-amber-300 flex items-center gap-1">
+                                <i class="fa-solid fa-bookmark text-[9px]"></i>
+                                ${item.title}
+                            </h4>
+                            <p class="text-[10px] text-zinc-300 leading-snug">${item.desc}</p>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function filterKnowledgeItems() {
+            const query = document.getElementById('knowledge-search').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('#knowledge-list > div');
+
+            cards.forEach(card => {
+                card.style.display = card.innerText.toLowerCase().includes(query) ? 'block' : 'none';
+            });
+        }
+
+        // -------------------------------------------------------------
+        // TOPIC DRILL VIEW
+        // -------------------------------------------------------------
+        function renderTopicDrillCards() {
+            const container = document.getElementById('topic-drill-cards');
+            if (!container) return;
+
+            let html = '';
+            Object.values(EXAM_TOPICS).forEach((topicName, idx) => {
+                const topicQuestions = QUESTION_BANK.filter(q => q.topic === topicName);
+                
+                html += `
+                    <div class="glass-card p-2.5 rounded-xl flex items-center justify-between border border-zinc-800">
+                        <div class="space-y-0.5 pr-2">
+                            <span class="text-[9px] font-bold text-blue-400 uppercase tracking-wider">MODULE 0${idx + 1}</span>
+                            <h3 class="text-xs font-bold text-white leading-tight">${topicName}</h3>
+                            <p class="text-[9px] text-zinc-400">${topicQuestions.length} 題精選</p>
+                        </div>
+                        <button onclick="startSingleTopicDrill('${topicName}')" class="px-2.5 py-1.5 bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/30 text-[10px] font-bold rounded-lg shrink-0 flex items-center gap-1">
+                            <span>練題</span>
+                            <i class="fa-solid fa-play text-[8px]"></i>
+                        </button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function startSingleTopicDrill(topicName) {
+            const topicQuestions = QUESTION_BANK.filter(q => q.topic === topicName);
+            if (topicQuestions.length === 0) {
+                alert("該單元暫無獨立試題");
+                return;
+            }
+
+            currentExamQuestions = [...topicQuestions];
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            bookmarkedQuestions.clear();
+
+            switchTab('exam');
+            document.getElementById('exam-start-card').classList.add('hidden');
+            document.getElementById('exam-active-container').classList.remove('hidden');
+
+            timeRemainingSeconds = 30 * 60;
+            startExamTimer();
+            renderCurrentExamQuestion();
+        }
+
+        // -------------------------------------------------------------
+        // FULL MOCK EXAM ENGINE
+        // -------------------------------------------------------------
+        function startFullMockExam() {
+            let allCaseQuestions = [];
+            CASE_STUDIES.forEach(cs => allCaseQuestions.push(...cs.questions));
+
+            let fullDeck = [...allCaseQuestions];
+            let standardPool = [...QUESTION_BANK];
+
+            while (fullDeck.length < 50) {
+                standardPool.forEach(q => {
+                    if (fullDeck.length < 50) {
+                        fullDeck.push({
+                            ...q,
+                            id: q.id + (fullDeck.length * 1000)
+                        });
+                    }
+                });
+            }
+
+            currentExamQuestions = fullDeck;
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            bookmarkedQuestions.clear();
+
+            document.getElementById('exam-start-card').classList.add('hidden');
+            document.getElementById('exam-active-container').classList.remove('hidden');
+
+            timeRemainingSeconds = 105 * 60;
+            startExamTimer();
+            renderCurrentExamQuestion();
+        }
+
+        function startExamTimer() {
+            clearInterval(examTimerInterval);
+            examTimerInterval = setInterval(() => {
+                timeRemainingSeconds--;
+                if (timeRemainingSeconds <= 0) {
+                    clearInterval(examTimerInterval);
+                    timeRemainingSeconds = 0;
+                    alert("⏱️ 時間到！系統正在自動交卷。");
+                    finishExamAndCalculateResult();
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeRemainingSeconds / 60);
+            const secs = timeRemainingSeconds % 60;
+            const timerEl = document.getElementById('exam-timer-display');
+            if (timerEl) timerEl.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function renderCurrentExamQuestion() {
+            const q = currentExamQuestions[currentQuestionIndex];
+            const card = document.getElementById('current-question-card');
+            if (!q || !card) return;
+
+            let caseScenarioText = null;
+            if (q.isCaseStudy) {
+                const parentCase = CASE_STUDIES.find(cs => cs.questions.some(subQ => subQ.id === q.id || subQ.question === q.question));
+                if (parentCase) caseScenarioText = parentCase.scenario;
+            }
+
+            const isBookmarked = bookmarkedQuestions.has(currentQuestionIndex);
+            const selectedOption = userAnswers[currentQuestionIndex];
+
+            let optionsHtml = '';
+            const labels = ['A', 'B', 'C', 'D'];
+            q.options.forEach((opt, idx) => {
+                const isSelected = selectedOption === idx;
+                const btnStyle = isSelected 
+                    ? 'bg-blue-600 border-blue-400 text-white shadow-md' 
+                    : 'bg-zinc-900 border-zinc-800 text-zinc-200 hover:border-zinc-700';
+
+                optionsHtml += `
+                    <button onclick="selectAnswerOption(${idx})" class="btn-option w-full text-left p-2.5 rounded-lg border ${btnStyle} transition-all flex items-start gap-2 active:scale-[0.99]">
+                        <span class="w-5 h-5 rounded ${isSelected ? 'bg-white text-blue-600' : 'bg-zinc-800 text-zinc-400'} font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                            ${labels[idx]}
+                        </span>
+                        <span class="text-xs leading-tight font-medium">${opt}</span>
+                    </button>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between border-b border-zinc-800/80 pb-1.5">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[10px] font-mono font-bold text-blue-400 bg-blue-500/10 border border-blue-500/30 px-1.5 py-0.5 rounded">
+                            ${currentQuestionIndex + 1} / ${currentExamQuestions.length} 題
+                        </span>
+                        ${q.isCaseStudy ? '<span class="text-[9px] font-bold text-rose-400 bg-rose-500/20 border border-rose-500/30 px-1.5 py-0.5 rounded">🔥 個案題</span>' : ''}
+                    </div>
+                    <span class="text-[9px] text-zinc-400 truncate max-w-[120px]">${q.topic}</span>
+                </div>
+
+                ${caseScenarioText ? `
+                    <div class="bg-amber-950/30 border border-amber-500/30 rounded-lg p-2 text-xs text-amber-200/90 space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-amber-400 text-[10px] flex items-center gap-1">
+                                <i class="fa-solid fa-file-lines"></i> 個案背景 Scenario
+                            </span>
+                            <button onclick="toggleScenarioBox(this)" class="text-[9px] text-amber-400 underline">收摺</button>
+                        </div>
+                        <div class="scenario-box max-h-24 overflow-y-auto text-[10px] leading-snug text-zinc-300 pr-1">
+                            ${caseScenarioText}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div class="text-xs font-bold text-white leading-snug py-0.5">
+                    ${q.question}
+                </div>
+
+                <div class="space-y-1.5 pt-1">
+                    ${optionsHtml}
+                </div>
+            `;
+
+            document.getElementById('answered-count-text').innerText = Object.keys(userAnswers).length;
+            const flagIcon = document.getElementById('flag-icon');
+            if (flagIcon) flagIcon.className = isBookmarked ? "fa-solid fa-bookmark text-amber-400" : "fa-regular fa-bookmark";
+
+            document.getElementById('btn-prev-q').disabled = (currentQuestionIndex === 0);
+            document.getElementById('btn-next-q').disabled = (currentQuestionIndex === currentExamQuestions.length - 1);
+        }
+
+        function toggleScenarioBox(btn) {
+            const box = btn.parentElement.nextElementSibling;
+            if (box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                btn.innerText = '收摺';
+            } else {
+                box.classList.add('hidden');
+                btn.innerText = '展開';
+            }
+        }
+
+        function selectAnswerOption(optionIdx) {
+            userAnswers[currentQuestionIndex] = optionIdx;
+            renderCurrentExamQuestion();
+        }
+
+        function toggleBookmarkCurrentQuestion() {
+            if (bookmarkedQuestions.has(currentQuestionIndex)) {
+                bookmarkedQuestions.delete(currentQuestionIndex);
+            } else {
+                bookmarkedQuestions.add(currentQuestionIndex);
+            }
+            renderCurrentExamQuestion();
+        }
+
+        function navigateQuestion(direction) {
+            const newIdx = currentQuestionIndex + direction;
+            if (newIdx >= 0 && newIdx < currentExamQuestions.length) {
+                currentQuestionIndex = newIdx;
+                renderCurrentExamQuestion();
+            }
+        }
+
+        function toggleQuestionGridModal() {
+            const modal = document.getElementById('modal-grid');
+            if (modal.classList.contains('hidden')) {
+                renderQuestionMatrixGrid();
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function renderQuestionMatrixGrid() {
+            const grid = document.getElementById('question-grid-matrix');
+            if (!grid) return;
+
+            let html = '';
+            currentExamQuestions.forEach((q, idx) => {
+                const isAnswered = userAnswers.hasOwnProperty(idx);
+                const isFlagged = bookmarkedQuestions.has(idx);
+                const isCurrent = (idx === currentQuestionIndex);
+
+                let btnBg = 'bg-zinc-800 text-zinc-300 border-zinc-700';
+                if (isCurrent) {
+                    btnBg = 'bg-blue-600 text-white font-bold ring-2 ring-blue-400';
+                } else if (isFlagged) {
+                    btnBg = 'bg-amber-500 text-black font-bold';
+                } else if (isAnswered) {
+                    btnBg = 'bg-blue-900/60 text-blue-200 border-blue-500/50';
+                } else if (q.isCaseStudy) {
+                    btnBg = 'bg-rose-950/40 border-rose-500/40 text-rose-300';
+                }
+
+                html += `
+                    <button onclick="jumpToQuestion(${idx})" class="h-8 rounded-lg border text-[10px] flex flex-col items-center justify-center transition-all ${btnBg}">
+                        <span>${idx + 1}</span>
+                    </button>
+                `;
+            });
+
+            grid.innerHTML = html;
+        }
+
+        function jumpToQuestion(idx) {
+            currentQuestionIndex = idx;
+            toggleQuestionGridModal();
+            renderCurrentExamQuestion();
+        }
+
+        function confirmFinishExam() {
+            const unanswered = currentExamQuestions.length - Object.keys(userAnswers).length;
+            if (confirm(unanswered > 0 ? `尚有 ${unanswered} 題未答！確定交卷？` : "確定要交卷嗎？")) {
+                finishExamAndCalculateResult();
+            }
+        }
+
+        function finishExamAndCalculateResult() {
+            clearInterval(examTimerInterval);
+
+            let totalCorrect = 0;
+            let caseStudyTotal = 0;
+            let caseStudyCorrect = 0;
+
+            currentExamQuestions.forEach((q, idx) => {
+                const userChoice = userAnswers[idx];
+                const isCorrect = (userChoice === q.answer);
+
+                if (isCorrect) {
+                    totalCorrect++;
+                } else {
+                    wrongQuestionIds.add(q.id);
+                }
+
+                if (q.isCaseStudy) {
+                    caseStudyTotal++;
+                    if (isCorrect) caseStudyCorrect++;
+                }
+            });
+
+            const caseStudyWrong = caseStudyTotal - caseStudyCorrect;
+            const isPassed = (totalCorrect >= 30) && (caseStudyWrong <= 3);
+
+            examHistory.push({ date: new Date(), score: totalCorrect, caseWrong: caseStudyWrong, isPassed: isPassed });
+            showExamResultModal(totalCorrect, caseStudyTotal, caseStudyWrong, isPassed);
+        }
+
+        function showExamResultModal(totalCorrect, caseTotal, caseWrong, isPassed) {
+            const modal = document.getElementById('modal-result');
+            document.getElementById('result-total-score').innerText = `${totalCorrect} / ${currentExamQuestions.length}`;
+            document.getElementById('result-total-bar').style.width = `${(totalCorrect / currentExamQuestions.length) * 100}%`;
+
+            const caseWrongText = document.getElementById('result-case-wrong');
+            if (isPassed) {
+                document.getElementById('result-title').innerText = "考試合格 Passed!";
+                document.getElementById('result-title').className = "text-base font-extrabold text-emerald-400";
+                caseWrongText.innerText = `錯 ${caseWrong} 題 (合格)`;
+                caseWrongText.className = "font-mono font-bold text-emerald-400";
+            } else {
+                document.getElementById('result-title').innerText = "不合格 Fail";
+                document.getElementById('result-title').className = "text-base font-extrabold text-rose-400";
+                caseWrongText.innerText = `錯 ${caseWrong} 題 (門檻:≤3題)`;
+                caseWrongText.className = "font-mono font-bold text-rose-400";
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function reviewExamAnswers() {
+            closeResultModal();
+            renderCurrentExamQuestionWithExplanation();
+        }
+
+        function renderCurrentExamQuestionWithExplanation() {
+            const q = currentExamQuestions[currentQuestionIndex];
+            const card = document.getElementById('current-question-card');
+            if (!q || !card) return;
+
+            const userChoice = userAnswers[currentQuestionIndex];
+            const isCorrect = (userChoice === q.answer);
+
+            let optionsHtml = '';
+            const labels = ['A', 'B', 'C', 'D'];
+            q.options.forEach((opt, idx) => {
+                let borderStyle = 'border-zinc-800 bg-zinc-900 text-zinc-300';
+                if (idx === q.answer) {
+                    borderStyle = 'border-emerald-500 bg-emerald-950/40 text-emerald-200 font-bold';
+                } else if (idx === userChoice && !isCorrect) {
+                    borderStyle = 'border-rose-500 bg-rose-950/40 text-rose-200 line-through';
+                }
+
+                optionsHtml += `
+                    <div class="w-full text-left p-2 rounded-lg border ${borderStyle} text-xs flex items-start gap-2">
+                        <span class="w-4 h-4 rounded bg-zinc-800 flex items-center justify-center shrink-0 font-bold text-[9px]">${labels[idx]}</span>
+                        <span class="leading-tight">${opt}</span>
+                    </div>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between border-b border-zinc-800 pb-1">
+                    <span class="text-[10px] font-bold text-amber-400">🔍 試題解析 Review</span>
+                    <span class="text-[10px] font-bold ${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+                        ${isCorrect ? '✓ 答對' : '❌ 答錯'}
+                    </span>
+                </div>
+
+                <div class="text-xs font-bold text-white pt-0.5">${q.question}</div>
+                <div class="space-y-1 pt-1">${optionsHtml}</div>
+
+                <div class="bg-blue-950/40 border border-blue-500/30 rounded-lg p-2 text-[10px] text-blue-200 space-y-0.5">
+                    <strong>法例解析：</strong> ${q.explanation}
+                </div>
+            `;
+        }
+
+        function closeResultModal() {
+            document.getElementById('modal-result').classList.add('hidden');
+        }
+
+        // -------------------------------------------------------------
+        // CASE STUDY DRILL VIEW
+        // -------------------------------------------------------------
+        function renderCaseStudySection() {
+            const container = document.getElementById('casestudy-content-area');
+            if (!container) return;
+
+            let html = '';
+            CASE_STUDIES.forEach((cs) => {
+                html += `
+                    <div class="glass-card rounded-xl p-3 space-y-2 border border-amber-500/20">
+                        <div class="flex items-center justify-between border-b border-zinc-800 pb-1">
+                            <span class="text-[10px] font-bold text-amber-400 uppercase">${cs.caseId}</span>
+                            <span class="text-[9px] text-zinc-400">${cs.questions.length} 題連環發問</span>
+                        </div>
+                        <h3 class="text-xs font-bold text-white">${cs.title}</h3>
+                        <div class="bg-zinc-900/90 rounded-lg p-2 text-[10px] text-zinc-300 leading-relaxed border border-zinc-800 max-h-28 overflow-y-auto">
+                            ${cs.scenario}
+                        </div>
+
+                        <div class="space-y-2 pt-1">
+                `;
+
+                cs.questions.forEach((q) => {
+                    html += `
+                        <div class="bg-zinc-950 rounded-lg p-2 border border-zinc-800 space-y-1.5">
+                            <h4 class="text-xs font-bold text-white">${q.question}</h4>
+                            <div class="space-y-1" id="cs-options-${q.id}">
+                    `;
+
+                    const labels = ['A', 'B', 'C', 'D'];
+                    q.options.forEach((opt, optIdx) => {
+                        html += `
+                            <button onclick="checkCaseStudyAnswer(${q.id}, ${optIdx}, ${q.answer})" class="w-full text-left p-1.5 rounded-md border border-zinc-800 bg-zinc-900 text-[11px] text-zinc-300 flex items-start gap-1.5">
+                                <span class="w-4 h-4 rounded bg-zinc-800 text-zinc-400 font-bold text-[9px] flex items-center justify-center shrink-0">${labels[optIdx]}</span>
+                                <span>${opt}</span>
+                            </button>
+                        `;
+                    });
+
+                    html += `
+                            </div>
+                            <div id="cs-explain-${q.id}" class="hidden p-2 rounded-md bg-blue-950/40 border border-blue-500/30 text-[10px] text-blue-200">
+                                <strong>解析：</strong> ${q.explanation}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function checkCaseStudyAnswer(qId, selectedIdx, correctIdx) {
+            const container = document.getElementById(`cs-options-${qId}`);
+            const explainBox = document.getElementById(`cs-explain-${qId}`);
+            if (!container) return;
+
+            const buttons = container.querySelectorAll('button');
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === correctIdx) {
+                    btn.className = "w-full text-left p-1.5 rounded-md border border-emerald-500 bg-emerald-950/40 text-[11px] text-emerald-200 font-bold flex items-start gap-1.5";
+                } else if (idx === selectedIdx && selectedIdx !== correctIdx) {
+                    btn.className = "w-full text-left p-1.5 rounded-md border border-rose-500 bg-rose-950/40 text-[11px] text-rose-200 line-through flex items-start gap-1.5";
+                }
+            });
+
+            if (explainBox) explainBox.classList.remove('hidden');
+        }
+
+        // -------------------------------------------------------------
+        // ANALYTICS VIEW
+        // -------------------------------------------------------------
+        function renderAnalyticsUI() {
+            const totalExams = examHistory.length;
+            const passedExams = examHistory.filter(e => e.isPassed).length;
+            const passRate = totalExams > 0 ? Math.round((passedExams / totalExams) * 100) : 0;
+
+            document.getElementById('stat-pass-rate').innerText = `${passRate}%`;
+            document.getElementById('stat-exam-count').innerText = `(共${totalExams}次)`;
+
+            const barsContainer = document.getElementById('topic-analytics-bars');
+            if (barsContainer) {
+                let html = '';
+                Object.values(EXAM_TOPICS).forEach((topicName, idx) => {
+                    const mockProgress = Math.min(100, 50 + (idx * 8));
+                    html += `
+                        <div class="space-y-0.5">
+                            <div class="flex justify-between text-[10px]">
+                                <span class="text-zinc-300">${topicName}</span>
+                                <span class="text-amber-400 font-mono font-bold">${mockProgress}%</span>
+                            </div>
+                            <div class="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-blue-500 rounded-full" style="width: ${mockProgress}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                barsContainer.innerHTML = html;
+            }
+
+            const wrongContainer = document.getElementById('wrong-questions-list');
+            const wrongBadge = document.getElementById('wrong-count-badge');
+            const retestBtn = document.getElementById('btn-retest-wrongs');
+
+            if (wrongBadge) wrongBadge.innerText = wrongQuestionIds.size;
+            if (retestBtn) retestBtn.disabled = (wrongQuestionIds.size === 0);
+
+            if (wrongContainer) {
+                if (wrongQuestionIds.size === 0) {
+                    wrongContainer.innerHTML = `<div class="text-center py-4 text-zinc-500 text-[11px] glass-card rounded-xl">🎉 暫無記錄錯題！</div>`;
+                } else {
+                    let html = '';
+                    let count = 0;
+                    wrongQuestionIds.forEach(qId => {
+                        count++;
+                        let foundQ = QUESTION_BANK.find(q => q.id === qId);
+                        if (!foundQ) {
+                            CASE_STUDIES.forEach(cs => {
+                                const sub = cs.questions.find(sq => sq.id === qId);
+                                if (sub) foundQ = sub;
+                            });
+                        }
+
+                        if (foundQ) {
+                            html += `
+                                <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-2 space-y-0.5 text-xs">
+                                    <div class="flex items-center justify-between text-[9px] text-zinc-400">
+                                        <span class="text-rose-400 font-bold">錯題 #${count}</span>
+                                        <span>${foundQ.topic}</span>
+                                    </div>
+                                    <p class="font-bold text-white text-[11px]">${foundQ.question}</p>
+                                    <p class="text-[10px] text-emerald-400"><strong>答案：</strong> ${foundQ.options[foundQ.answer]}</p>
+                                </div>
+                            `;
+                        }
+                    });
+                    wrongContainer.innerHTML = html;
+                }
+            }
+        }
+
+        function startWrongQuestionsPractice() {
+            if (wrongQuestionIds.size === 0) return;
+
+            let wrongDeck = [];
+            wrongQuestionIds.forEach(qId => {
+                let foundQ = QUESTION_BANK.find(q => q.id === qId);
+                if (!foundQ) {
+                    CASE_STUDIES.forEach(cs => {
+                        const sub = cs.questions.find(sq => sq.id === qId);
+                        if (sub) foundQ = sub;
+                    });
+                }
+                if (foundQ) wrongDeck.push(foundQ);
+            });
+
+            currentExamQuestions = wrongDeck;
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            bookmarkedQuestions.clear();
+
+            switchTab('exam');
+            document.getElementById('exam-start-card').classList.add('hidden');
+            document.getElementById('exam-active-container').classList.remove('hidden');
+
+            timeRemainingSeconds = 45 * 60;
+            startExamTimer();
+            renderCurrentExamQuestion();
+        }
+    </script>
+</body>
+</html>
