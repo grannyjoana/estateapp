@@ -923,7 +923,6 @@
         function startSingleTopicDrill(topicName) {
             const topicQuestions = QUESTION_BANK.filter(q => q.topic === topicName);
             if (topicQuestions.length === 0) {
-                alert("該單元暫無獨立試題");
                 return;
             }
 
@@ -982,7 +981,6 @@
                 if (timeRemainingSeconds <= 0) {
                     clearInterval(examTimerInterval);
                     timeRemainingSeconds = 0;
-                    alert("⏱️ 時間到！系統正在自動交卷。");
                     finishExamAndCalculateResult();
                 }
                 updateTimerDisplay();
