@@ -93,7 +93,7 @@
 <script>
   // 核心數據結構 (localStorage 機制)
   const Store = {
-    getExamDate: () => localStorage.getItem('exam_date') || '2026-10-15',
+    getExamDate: () => localStorage.getItem('exam_date') || '2026-10-21',
     setExamDate: (date) => localStorage.setItem('exam_date', date),
     getWrongQuestions: () => JSON.parse(localStorage.getItem('wrong_q') || '[]'),
   };
