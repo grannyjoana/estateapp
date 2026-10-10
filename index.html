@@ -232,3 +232,131 @@
 </script>
 </body>
 </html>
+<!-- 將呢段升級版 JS 邏輯放落 HTML 底部 -->
+<script>
+  // --- 擴充資料庫：全卷題庫樣本 & 表格 1-6 數據 ---
+  const QuestionBank = {
+    fullExam: [
+      { id: 1, type: "single", q: "根據《地產代理條例》，地產代理發出嘅廣告必須符合咩基本原則？", options: ["A. 必須具備業主書面授權", "B. 價格可以隨意標高", "C. 不需核實業權", "D. 只需要口頭同意"], answer: 0, exp: "根據《地產代理條例》及執業通告，發出物業廣告前必須取得客戶（通常為業主）的書面授權。" },
+      { id: 2, type: "case", q: "【個案題】營業員阿強在未取得業主同意下，私自以低於市價 10% 刊登放盤廣告，吸引買家。請問阿強違反咗邊個規例？", options: ["A. 第511章一般責任", "B. 操守守則中誠實及忠實代理責任", "C. 完全合法，只要賣得出", "D. 只違反公司內部守則"], answer: 1, exp: "個案分析：營業員必須秉持誠實、忠實及嚴謹態度，未得授權擅自標價或刊登屬嚴重違反專業操守。" }
+    ],
+    forms: [
+      { id: 1, name: "表格 1：出售住宅用的地產代理協議 (業主 - 獨家)", desc: "適用於委託單一代理獨家出售住宅物業。", keyPoints: ["必須列明有效期限", "訂明佣金百份比", "獨家代理權條文細節"] },
+      { id: 2, name: "表格 2：出售住宅用的地產代理協議 (業主 - 非獨家)", desc: "適用於委託多個代理同時出售物業。", keyPoints: ["非獨家委託限制較少", "多代理競爭機制"] },
+      { id: 3, name: "表格 3：購買住宅用的地產代理協議 (買家)", desc: "協助買家尋找住宅物業時必須簽署。", keyPoints: ["必須在睇樓前簽署", "訂明會否向買家收取佣金"] },
+      { id: 4, name: "表格 4：出租住宅用的地產代理協議 (業主)", desc: "業主委託出租住宅專用。", keyPoints: ["列明租金要求與管理費責任"] },
+      { id: 5, name: "表格 5：承租住宅用的地產代理協議 (租客)", desc: "協助租客租入住宅物業時簽署。", keyPoints: ["清楚界定代理代理人身份（單邊代理定雙邊代理）"] },
+      { id: 6, name: "物業資料表格（住宅買賣 / 出租）", desc: "俗稱S牌必考嘅物業資料查核表。", keyPoints: ["實用面積、業權人、地租差餉、僭建情況查核"] }
+    ]
+  };
+
+  // --- 3. 專項：表格 1-6 互動頁面渲染 ---
+  function renderSpecialForms(container) {
+    let html = `<h2>📑 專項：表格 1-6 核心要點速學</h2><p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">S牌必考實務，點擊查看各表格法律要求：</p>`;
+    
+    QuestionBank.forms.forEach(f => {
+      html += `
+        <div class="card">
+          <h3 style="color:var(--accent);">${f.name}</h3>
+          <p style="font-size:0.85rem; margin:6px 0;">${f.desc}</p>
+          <ul style="padding-left:18px; font-size:0.8rem; color:var(--text-muted);">
+            ${f.keyPoints.map(kp => `<li>${kp}</li>`).join('')}
+          </ul>
+        </div>`;
+    });
+    container.innerHTML = html;
+  }
+
+  // --- 4. 模擬試：全卷計時與交卷引擎 ---
+  let examTimer = null;
+  let timeLeft = 150 * 60; // 150 分鐘
+
+  function startExam(mode) {
+    const main = document.getElementById('main-content');
+    timeLeft = 150 * 60;
+    
+    let currentQuestions = QuestionBank.fullExam;
+    let selectedAnswers = {};
+
+    function renderExamPaper() {
+      let qHtml = `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:10px 16px; border-radius:8px; margin-bottom:12px; position:sticky; top:0; z-index:10;">
+          <span>⏱️ 剩餘時間: <strong id="timer-display" style="color:var(--danger); font-size:1.1rem;">150:00</strong></span>
+          <button class="btn" style="width:auto; margin:0; padding:6px 12px; background:#10b981; color:#fff;" onclick="submitExam()">交卷對答案</button>
+        </div>
+      `;
+
+      currentQuestions.forEach((item, idx) => {
+        qHtml += `
+          <div class="card" id="q-card-${idx}">
+            <div style="font-size:0.8rem; color:var(--text-muted);">第 ${idx + 1} 題 (${item.type === 'case' ? '個案題' : '單選題'})</div>
+            <p style="margin: 8px 0; font-weight:bold; font-size:0.95rem;">${item.q}</p>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              ${item.options.map((opt, optIdx) => `
+                <label style="background:#0f172a; padding:8px 12px; border-radius:6px; font-size:0.85rem; display:flex; align-items:center; gap:8px; border:1px solid var(--border); cursor:pointer;">
+                  <input type="radio" name="q_${idx}" value="${optIdx}" onchange="selectedAnswers[${idx}] =${optIdx}">
+                  ${opt}
+                </label>
+              `).join('')}
+            </div>
+            <div id="exp-${idx}" style="display:none; margin-top:10px; padding:8px; background:#334155; border-radius:6px; font-size:0.8rem;"></div>
+          </div>
+        `;
+      });
+
+      main.innerHTML = qHtml;
+      startCountdown();
+    }
+
+    renderExamPaper();
+
+    window.startCountdown = function() {
+      if(examTimer) clearInterval(examTimer);
+      examTimer = setInterval(() => {
+        timeLeft--;
+        let m = Math.floor(timeLeft / 60);
+        let s = timeLeft % 60;
+        const disp = document.getElementById('timer-display');
+        if(disp) disp.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+        if(timeLeft <= 0) {
+          clearInterval(examTimer);
+          alert("時間到！系統自動交卷。");
+          submitExam();
+        }
+      }, 1000);
+    }
+
+    window.submitExam = function() {
+      clearInterval(examTimer);
+      let score = 0;
+      let wrongList = Store.getWrongQuestions();
+
+      currentQuestions.forEach((item, idx) => {
+        const userAns = selectedAnswers[idx];
+        const expBox = document.getElementById(`exp-${idx}`);
+        expBox.style.display = 'block';
+
+        if(userAns === item.answer) {
+          score++;
+          expBox.innerHTML = `✅ <strong style="color:#10b981;">答對！</strong> ${item.exp}`;
+        } else {
+          expBox.innerHTML = `❌ <strong style="color:var(--danger);">答錯！</strong> 正確答案係 ${item.options[item.answer]}。<br>解析：${item.exp}`;
+          // 記錄入錯題本
+          if(!wrongList.some(q => q.id === item.id)) wrongList.push(item);
+        }
+      });
+
+      localStorage.setItem('wrong_q', JSON.stringify(wrongList));
+      alert(`考試結束！你嘅得分係：${score} / ${currentQuestions.length}`);
+    }
+  }
+
+  // 覆蓋原本 switchTab 入面未完成嘅 case
+  const originalSwitchTab = switchTab;
+  switchTab = function(tabName) {
+    if(examTimer) clearInterval(examTimer); // 切換分頁時清空計時器
+    originalSwitchTab(tabName);
+    const main = document.getElementById('main-content');
+    if(tabName === 'special') renderSpecialForms(main);
+  }
+</script>
