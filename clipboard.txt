@@ -1,0 +1,141 @@
+<script>
+  // --- 專用 IndexedDB 工具函數 (專門用來在 iPhone 瀏覽器內安全儲存大型 PDF) ---
+  const PDFDB = {
+    dbName: "S_Exam_PDF_DB",
+    storeName: "pdfs",
+    
+    open() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(this.dbName, 1);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains(this.storeName)) {
+            db.createObjectStore(this.storeName, { keyPath: "id", autoIncrement: true });
+          }
+        };
+      });
+    },
+
+    async savePDF(file) {
+      const db = await this.open();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(this.storeName, "readwrite");
+        const store = transaction.objectStore(this.storeName);
+        const item = { name: file.name, size: file.size, blob: file, date: new Date().toLocaleDateString() };
+        const request = store.add(item);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    },
+
+    async getAllPDFs() {
+      const db = await this.open();
+      return new Promise((resolve, reject) => {
+        const transaction = db. transaction(this.storeName, "readonly");
+        const store = transaction.objectStore(this.storeName);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    },
+
+    async deletePDF(id) {
+      const db = await this.open();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(this.storeName, "readwrite");
+        const store = transaction.objectStore(this.storeName);
+        const request = store.delete(id);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+  };
+
+  // --- 5. 「我的資料 & PDF 上傳」介面渲染 ---
+  async function renderDocsManager(container) {
+    let pdfList = [];
+    try {
+      pdfList = await PDFDB.getAllPDFs();
+    } catch(e) {
+      console.error("載入 PDF 失敗", e);
+    }
+
+    container.innerHTML = `
+      <h2>📁 我的資料與 PDF 溫習庫</h2>
+      <p style="color:var(--text-muted); font-size:0.85rem; margin: 6px 0 14px 0;">支援將官方 PDF（如操守守則、學習指引）直接保存在本機瀏覽器，離線也能隨時查閱。</p>
+      
+      <!-- 上傳按鈕區 -->
+      <div class="card" style="border: 2px dashed var(--accent); text-align: center; padding: 20px;">
+        <p style="font-size: 0.9rem; margin-bottom: 10px;">📥 點擊下方按鈕上傳 PDF 檔案</p>
+        <input type="file" id="pdf-file-input" accept="application/pdf" style="display:none;" onchange="handleFileUpload(this)">
+        <button class="btn" onclick="document.getElementById('pdf-file-input').click()" style="width: auto; margin: 0 auto; padding: 8px 20px;">選擇手機中的 PDF</button>
+      </div>
+
+      <!-- 已上傳清單 -->
+      <h3 style="margin-top: 20px; font-size: 1rem;">已匯入的官方與參考 PDF (${pdfList.length})</h3>
+      <div id="pdf-list-container" style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+        ${pdfList.length === 0 ? '<p style="color:var(--text-muted); font-size:0.85rem;">暫時未有匯入檔案，快去下載官方 PDF 放到這裏吧！</p>' : ''}
+        ${pdfList.map(item => `
+          <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; margin: 0;">
+            <div>
+              <div style="font-weight: bold; font-size: 0.9rem;">📄 ${item.name}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">大小: ${(item.size / 1024 / 1024).toFixed(2)} MB \vert{} 匯入日期: ${item.date}</div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn" style="margin:0; padding:6px 10px; font-size:0.75rem; background:#38bdf8;" onclick="viewPDF(${item.id})">檢視</button>
+              <button class="btn btn-danger" style="margin:0; padding:6px 10px; font-size:0.75rem;" onclick="removePDF(${item.id})">刪除</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // 處理檔案上傳邏輯
+  async function handleFileUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.type !== "application/pdf") {
+      alert("請上傳合規格的 PDF 檔案！");
+      return;
+    }
+    
+    try {
+      await PDFDB.savePDF(file);
+      alert(`成功匯入檔案：${file.name}`);
+      renderDocsManager(document.getElementById('main-content'));
+    } catch (err) {
+      alert("儲存檔案失敗，可能超出手機瀏覽器容量限制。");
+      console.error(err);
+    }
+  }
+
+  // 刪除本機 PDF
+  async function removePDF(id) {
+    if(confirm("確定要刪除這個本地 PDF 檔案嗎？")) {
+      await PDFDB.deletePDF(id);
+      renderDocsManager(document.getElementById('main-content'));
+    }
+  }
+
+  // 檢視 PDF 邏輯（利用瀏覽器新視窗開 Blob URL）
+  async function viewPDF(id) {
+    const pdfList = await PDFDB.getAllPDFs();
+    const target = pdfList.find(p => p.id === id);
+    if(target) {
+      const fileURL = URL.createObjectURL(target.blob);
+      window.open(fileURL, '_blank');
+    }
+  }
+
+  // 覆蓋原本 switchTab 中的 docs 分頁
+  const baseSwitchTabForDocs = switchTab;
+  switchTab = function(tabName) {
+    baseSwitchTabForDocs(tabName);
+    if(tabName === 'docs') {
+      renderDocsManager(document.getElementById('main-content'));
+    }
+  }
+</script>
