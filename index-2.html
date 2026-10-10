@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>香港地產 S 牌備試通</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding: 16px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+    .container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 16px; }
+    header { text-align: center; margin-bottom: 10px; }
+    h1 { font-size: 1.4rem; color: var(--text); }
+    p.subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+    .card { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .btn { background-color: var(--primary); color: white; border: none; border-radius: 8px; padding: 12px; font-size: 1rem; font-weight: bold; width: 100%; cursor: pointer; text-align: center; transition: background 0.2s; }
+    .btn:active { opacity: 0.8; }
+    .option-btn { background-color: #0f172a; color: var(--text); border: 1px solid var(--border); text-align: left; margin-bottom: 8px; font-weight: normal; }
+    #loading { text-align: center; color: var(--text-muted); padding: 40px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>🏠 香港地產 S 牌考前特訓</h1>
+      <p class="subtitle">專為 2026 年 10 月考試打造的 PWA 刷題神器</p>
+    </header>
+
+    <main id="main-content">
+      <div class="card" id="loading">
+        <p>正在載入題庫檔案 (questions-code.json)...</p>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let examData = null;
+    let currentIdx = 0;
+    let score = 0;
+
+    // 當網頁載入時，自動去讀取你個 questions-code.json
+    async function loadQuestionBank() {
+      const main = document.getElementById('main-content');
+      try {
+        let response = await fetch('./questions-code.json');
+        if (!response.ok) throw new Error('找不到 questions-code.json 檔案');
+        
+        examData = await response.json();
+        console.log("成功載入題庫：", examData.title);
+        
+        // 載入成功後顯示首頁
+        renderHome();
+      } catch (error) {
+        console.error(error);
+        main.innerHTML = `
+          <div class="card" style="border-color: var(--danger); text-align:center;">
+            <h3 style="color: var(--danger); margin-bottom: 8px;">⚠️ 載入題庫失敗</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">無法讀取同目錄下的 <code>questions-code.json</code>，請確保檔案名稱正確並已上傳至 GitHub。</p>
+            <button class="btn" onclick="loadQuestionBank()">重新嘗試</button>
+          </div>
+        `;
+      }
+    }
+
+    // 渲染主畫面：顯示題庫標題與開始按鈕
+    function renderHome() {
+      const main = document.getElementById('main-content');
+      const totalQuestions = examData.questions ? examData.questions.length : 0;
+      
+      main.innerHTML = `
+        <div class="card" style="display: flex; flex-direction: column; gap: 16px;">
+          <h2>${examData.title || '地產 S 牌題庫'}</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">本章節收錄了共 <strong>${totalQuestions}</strong> 條官方重點精選題目，助你輕鬆通關。</p>
+          <button class="btn" onclick="startQuiz()">開始刷題 🚀</button>
+        </div>
+      `;
+    }
+
+    // 開始測驗
+    function startQuiz() {
+      currentIdx = 0;
+      score = 0;
+      renderQuestion();
+    }
+
+    // 渲染單條題目
+    function renderQuestion() {
+      const main = document.getElementById('main-content');
+      const questions = examData.questions;
+
+      if (currentIdx >= questions.length) {
+        // 測驗完成畫面
+        main.innerHTML = `
+          <div class="card" style="text-align: center; display: flex; flex-direction: column; gap: 16px;">
+            <h2>🎉 恭喜完成本輪特訓！</h2>
+            <p style="font-size: 1.2rem;">你的最終得分：<strong style="color: var(--primary);">${score}</strong> / ${questions.length}</p>
+            <button class="btn" onclick="renderHome()">返回主頁</button>
+          </div>
+        `;
+        return;
+      }
+
+      const q = questions[currentIdx];
+      main.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-muted);">
+          <button style="background:none; border:none; color:var(--text-muted); cursor:pointer;" onclick="renderHome()">⬅ 返回</button>
+          <span>題目 ${currentIdx + 1} / ${questions.length}</span>
+        </div>
+
+        <div class="card" style="display: flex; flex-direction: column; gap: 12px;">
+          <p style="font-weight: bold; font-size: 1rem; line-height: 1.4;">${q.q}</p>
+          <div style="display: flex; flex-direction: column; gap: 8px;" id="options-container">
+            ${q.options.map((opt, idx) => `
+              <button class="btn option-btn" onclick="checkAnswer(${idx},${q.answer}, '${q.exp.replace(/'/g, "\\'")}')">${opt}</button>
+            `).join('')}
+          </div>
+          <div id="explanation" style="display: none; padding: 12px; background: #334155; border-radius: 8px; font-size: 0.85rem; line-height: 1.4;"></div>
+          <button id="next-btn" class="btn" style="display: none; margin-top: 8px;" onclick="currentIdx++; renderQuestion();">下一題 ➡</button>
+        </div>
+      `;
+    }
+
+    // 檢查答案邏輯
+    function checkAnswer(selected, correct, expText) {
+      const optionButtons = document.querySelectorAll('#options-container button');
+      optionButtons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === correct) {
+          btn.style.backgroundColor = 'var(--success)';
+          btn.style.borderColor = 'var(--success)';
+          btn.style.color = '#fff';
+        } else if (idx === selected) {
+          btn.style.backgroundColor = 'var(--danger)';
+          btn.style.borderColor = 'var(--danger)';
+          btn.style.color = '#fff';
+        }
+      });
+
+      const expBox = document.getElementById('explanation');
+      expBox.style.display = 'block';
+
+      if (selected === correct) {
+        score++;
+        expBox.innerHTML = `✅ <strong style="color: var(--success);">答對咗！</strong><br>${expText}`;
+      } else {
+        expBox.innerHTML = `❌ <strong style="color: var(--danger);">答錯咗！</strong><br>💡 <strong>官方解析：</strong>${expText}`;
+      }
+
+      document.getElementById('next-btn').style.display = 'block';
+    }
+
+    // App 啟動時執行讀取
+    loadQuestionBank();
+  </script>
+</body>
+</html>
