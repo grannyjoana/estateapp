@@ -2,7 +2,7 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>香港地產營業員 (S牌) 2026 模擬考試 & 溫習神條 iOS App</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -41,12 +41,28 @@
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', 'Noto Sans HK', -apple-system, BlinkMacSystemFont, sans-serif;
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            width: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
             background-color: #09090b;
             color: #f4f4f5;
+            font-family: 'Inter', 'Noto Sans HK', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* Safe area helpers for modern iOS devices */
+        .pb-safe-content {
+            padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 16px));
+        }
+
+        .tab-safe-area {
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            height: calc(3.5rem + env(safe-area-inset-bottom, 0px));
         }
 
         /* Glassmorphism Navigation */
@@ -93,6 +109,12 @@
             scrollbar-width: none;
         }
 
+        /* Prevent unwanted overscroll elastictity on main container */
+        .scroll-container {
+            overscroll-behavior-y: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .badge-pulse {
             animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
@@ -102,27 +124,13 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-0 sm:p-2 md:p-4 bg-zinc-950 text-zinc-100 overflow-x-hidden">
+<body class="h-full w-full flex items-center justify-center p-0 sm:p-2 md:p-4 bg-zinc-950 text-zinc-100 overflow-hidden select-none">
 
     <!-- iOS Dynamic Layout Shell -->
-    <div id="app-shell" class="w-full max-w-md h-screen sm:h-[860px] sm:max-h-[96vh] bg-black sm:rounded-[40px] shadow-2xl border-0 sm:border-[6px] border-zinc-800 flex flex-col relative overflow-hidden transition-all duration-200">
+    <div id="app-shell" class="w-full max-w-md h-full sm:h-[860px] sm:max-h-[96vh] bg-black sm:rounded-[40px] shadow-2xl border-0 sm:border-[6px] border-zinc-800 flex flex-col relative overflow-hidden transition-all duration-200">
         
-        <!-- iOS Status Bar -->
-        <div class="w-full h-9 px-5 pt-2 flex justify-between items-center text-[11px] font-semibold text-white z-50 shrink-0 select-none glass-nav border-b border-white/5">
-            <span id="ios-clock">09:41</span>
-            <!-- Dynamic Island Placeholder -->
-            <div class="w-20 h-3.5 bg-black rounded-full flex items-center justify-end px-1.5 gap-1 border border-zinc-800/60">
-                <div class="w-1.5 h-1.5 rounded-full bg-blue-500/80"></div>
-            </div>
-            <div class="flex items-center gap-1 text-[10px]">
-                <i class="fa-solid fa-signal"></i>
-                <i class="fa-solid fa-wifi"></i>
-                <i class="fa-solid fa-battery-full text-emerald-400"></i>
-            </div>
-        </div>
-
-        <!-- App Compact Header & Scale Adjuster -->
-        <div class="px-3 py-2 flex items-center justify-between border-b border-zinc-800 bg-zinc-900/90 z-40 shrink-0 gap-1">
+        <!-- App Compact Header & Scale Adjuster (Status Bar Removed) -->
+        <div class="px-3 py-2 flex items-center justify-between border-b border-zinc-800 bg-zinc-900/90 z-40 shrink-0 gap-1 pt-safe">
             <div class="flex items-center gap-1.5 min-w-0">
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xs shadow-md shrink-0">
                     S
@@ -160,8 +168,8 @@
             </div>
         </div>
 
-        <!-- Main Scrollable Container -->
-        <div id="main-content" class="flex-1 overflow-y-auto no-scrollbar relative bg-zinc-950 pb-16 transition-all duration-150">
+        <!-- Main Scrollable Container with Overscroll Fix and Bottom Safe Area Padding -->
+        <div id="main-content" class="flex-1 overflow-y-auto scroll-container no-scrollbar relative bg-zinc-950 pb-safe-content transition-all duration-150">
             
             <!-- VIEW 1: 📚 知識庫 (Knowledge Base) -->
             <div id="view-knowledge" class="view-panel p-2.5 space-y-2.5">
@@ -352,8 +360,8 @@
 
         </div>
 
-        <!-- Floating Segmented iOS Tab Bar -->
-        <div class="absolute bottom-0 left-0 right-0 h-13 bg-zinc-900/95 backdrop-blur-md border-t border-zinc-800/80 flex items-center justify-around px-1 z-40">
+        <!-- Floating Segmented iOS Tab Bar with Safe Area Bottom Padding -->
+        <div class="absolute bottom-0 left-0 right-0 bg-zinc-900/95 backdrop-blur-md border-t border-zinc-800/80 flex items-center justify-around px-1 z-40 tab-safe-area">
             <button onclick="switchTab('knowledge')" id="tab-knowledge" class="tab-btn flex flex-col items-center justify-center w-full h-full text-blue-500 transition-colors">
                 <i class="fa-solid fa-book-bookmark text-sm"></i>
                 <span class="text-[9px] font-medium mt-0.5">知識庫</span>
@@ -378,7 +386,7 @@
 
         <!-- Question Grid Matrix Modal -->
         <div id="modal-grid" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex flex-col justify-end">
-            <div class="bg-zinc-900 border-t border-zinc-800 rounded-t-2xl p-4 max-h-[75%] overflow-y-auto space-y-3">
+            <div class="bg-zinc-900 border-t border-zinc-800 rounded-t-2xl p-4 max-h-[75%] overflow-y-auto space-y-3 pb-safe-content">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs font-bold text-white">50題 Answer Matrix (點擊跳轉)</h3>
                     <button onclick="toggleQuestionGridModal()" class="w-6 h-6 bg-zinc-800 text-zinc-400 rounded-full flex items-center justify-center">
@@ -755,9 +763,6 @@
         // APPLICATION INIT
         // -------------------------------------------------------------
         window.onload = function() {
-            updateClock();
-            setInterval(updateClock, 1000);
-            
             updateCountdownDays();
             renderKnowledgeBase();
             renderTopicDrillCards();
@@ -766,12 +771,6 @@
 
             switchTab('knowledge');
         };
-
-        function updateClock() {
-            const now = new Date();
-            const clockEl = document.getElementById('ios-clock');
-            if (clockEl) clockEl.innerText = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        }
 
         function updateCountdownDays() {
             const now = new Date();
